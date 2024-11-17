@@ -1,15 +1,11 @@
 {
   "name": "create-larana-js",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Initializer for larana-js projects",
   "bin": {
     "create-larana-js": "./bin/index.js"
   },
-  "keywords": [],
+  "keywords": ["larana", "larana-js", "utility"],
   "author": "Evgenii Kucheriavyi",
-  "license": "MIT",
-  "dependencies": {
-    "chalk": "^5.3.0",
-    "fs-extra": "^11.2.0"
-  }
+  "license": "MIT"
 }

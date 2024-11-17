@@ -1,33 +1,49 @@
 #!/usr/bin/env node
 
-const fs = require('fs-extra')
+const fs = require('fs')
 const path = require('path')
-const chalk = require('chalk')
 const { execSync } = require('child_process')
 
-const log = (msg) => console.log(chalk.green(msg))
-const error = (msg) => console.error(chalk.red(msg))
+const log = (msg) => console.log(`\x1b[32m%s\x1b[0m`, msg)
+const error = (msg) => console.error(`\x1b[31m%s\x1b[0m`, msg)
+
+function ensureDir(dirPath) {
+	if (!fs.existsSync(dirPath)) {
+		fs.mkdirSync(dirPath, { recursive: true })
+	}
+}
+
+function copyDirectory(srcDir, destDir) {
+	const entries = fs.readdirSync(srcDir, { withFileTypes: true })
+	for (const entry of entries) {
+		const srcPath = path.join(srcDir, entry.name)
+		const destPath = path.join(destDir, entry.name)
+		if (entry.isDirectory()) {
+			ensureDir(destPath)
+			copyDirectory(srcPath, destPath)
+		} else {
+			fs.copyFileSync(srcPath, destPath)
+		}
+	}
+}
 
 async function createProject() {
 	const projectName = process.argv[2] || 'larana-js-app'
 	const projectPath = path.resolve(process.cwd(), projectName)
-	const templatePath = path.resolve(__dirname, '../template') // Path to initial structure
+	const templatePath = path.resolve(__dirname, '../template')
 
 	log(`Creating project: ${projectName}`)
-	await fs.ensureDir(projectPath)
+	ensureDir(projectPath)
 
-	// Initialize `package.json`
 	log('Initializing package.json...')
 	process.chdir(projectPath)
 	execSync('npm init -y', { stdio: 'inherit' })
 
-	// Install `larana-js`
 	log('Installing larana-js...')
 	execSync('npm install larana-js', { stdio: 'inherit' })
 
-	// Copy initial file structure
 	log('Setting up initial file structure...')
-	await fs.copy(templatePath, projectPath)
+	copyDirectory(templatePath, projectPath)
 
 	log('Project setup complete!')
 }
