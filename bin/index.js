@@ -21,13 +21,17 @@ function copyDirectory(srcDir, destDir) {
 		if (entry.isDirectory()) {
 			ensureDir(destPath)
 			copyDirectory(srcPath, destPath)
+			continue
+		}
+		if (entry.name === '_gitignore') {
+			fs.copyFileSync(srcPath, path.join(destDir, '.gitignore'))
 		} else {
 			fs.copyFileSync(srcPath, destPath)
 		}
 	}
 }
 
-async function createProject() {
+function createProject() {
 	const projectName = process.argv[2] || 'larana-js-app'
 	const projectPath = path.resolve(process.cwd(), projectName)
 	const templatePath = path.resolve(__dirname, '../template')
@@ -48,7 +52,7 @@ async function createProject() {
 	log('Project setup complete!')
 }
 
-async function main() {
+function main() {
 	try {
 		createProject()
 	} catch (err) {

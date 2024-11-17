@@ -1,6 +1,6 @@
 {
   "name": "create-larana-js",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Initializer for larana-js projects",
   "bin": {
     "create-larana-js": "./bin/index.js"
